@@ -9,81 +9,228 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            overflow: hidden; /* 禁止滚动，避免弹窗超出屏幕 */
-            background-color: #f0f0f0;
-            font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            font-family: "Microsoft YaHei", "Heiti SC", sans-serif;
         }
-        /* 提示弹窗样式 */
         .tip-box {
-            position: absolute; /* 绝对定位，方便控制随机位置 */
-            padding: 15px 20px;
+            position: absolute;
+            padding: 12px 18px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 16px;
-            color: #333;
-            z-index: 1; /* 确保弹窗层级正确 */
-            cursor: pointer; /* 点击可移除弹窗（可选功能） */
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+            font-size: 15px;
+            color: #2c3e50;
+            z-index: 1;
+            cursor: pointer;
+            transition: transform 0.5s ease-out;
+            max-width: 140px;
+            text-align: center;
+        }
+        .tip-box:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
     <script>
-        // 温馨提示列表
+        // 新增大量关心类提示语（共100条）
         const tips = [
-            '多喝水哦~', '保持微笑呀', '元气满满',
-            '吃水果啦', '好心情', '爱自己', '想你了',
-            '梦想成真', '期待见面', '金榜题名',
-            '顺顺利利', '早点休息', '烦恼消失',
-            '别熬夜', '开心吗', '多穿衣服'
+            '今天也要好好吃饭呀',
+            '累了就歇会儿，别硬撑',
+            '记得带伞，外面好像要下雨',
+            '多穿件衣服，别着凉了',
+            '眼睛酸了吧？看看远处放松下',
+            '工作再忙也要记得喝水',
+            '晚上早点睡，别熬太晚啦',
+            '今天的你也超棒的',
+            '天气干燥，记得涂护手霜',
+            '别给自己太大压力，慢慢来',
+            '饿不饿？要不要吃点东西',
+            '出门注意安全，早点回来',
+            '累了就靠一会儿，我在呢',
+            '今天有好好休息吗？',
+            '别总熬夜，对身体不好',
+            '记得吃早餐，养胃很重要',
+            '心情不好就跟我说，别憋着',
+            '路上小心，注意车辆',
+            '降温了，把外套穿上吧',
+            '多吃点蔬菜，补充维生素',
+            '别久坐，起来活动活动',
+            '今天也要保持开心呀',
+            '感觉累了就停下来喘口气',
+            '睡前泡个脚，睡得更香',
+            '别太在意别人的看法，做自己就好',
+            '口渴了吧？去倒杯水喝',
+            '今天辛苦了，奖励自己一点甜',
+            '记得定时起来拉伸一下',
+            '阴天也要保持好心情呀',
+            '别吃太多冰的，对肠胃不好',
+            '压力大的话，出去散散步吧',
+            '头发该吹干再睡哦，不然会头疼',
+            '今天有没有发生开心的事？',
+            '别憋尿，对身体不好',
+            '多喝温水，比饮料健康',
+            '累了就闭上眼睛休息几分钟',
+            '记得吃水果，补充水分',
+            '别总看手机，让眼睛休息下',
+            '今天的风有点大，戴个帽子吧',
+            '保持微笑，你笑起来很好看',
+            '别熬夜追剧啦，早点休息',
+            '记得涂防晒霜，紫外线很强',
+            '工作再忙也要按时吃饭',
+            '不开心的时候，吃点甜食会好很多',
+            '走路别玩手机，注意脚下',
+            '天冷了，被子盖厚一点',
+            '别给自己太多任务，尽力就好',
+            '记得给家里打个电话',
+            '感觉冷的话，喝点热汤吧',
+            '今天也要元气满满呀',
+            '别硬扛，累了就说出来',
+            '多吃点蛋白质，增强抵抗力',
+            '睡前别想太多，好好睡觉',
+            '出门带点纸巾，万一需要呢',
+            '别吃太咸，对身体不好',
+            '累了就躺会儿，别勉强自己',
+            '今天的阳光很好，出去晒晒太阳吧',
+            '记得换洗衣物，保持清爽',
+            '别焦虑，一切都会慢慢好起来的',
+            '多吃点粗粮，有助于消化',
+            '感觉疲惫的话，就少做一点事',
+            '下雨天路滑，走路慢点',
+            '记得刷牙，保护牙齿',
+            '别总吃外卖，偶尔自己做点吃的',
+            '压力大的时候，听听喜欢的歌吧',
+            '今天有没有好好照顾自己？',
+            '别熬夜赶工，身体最重要',
+            '多喝豆浆，补充营养',
+            '累了就抱抱自己，你很棒',
+            '记得整理房间，心情会变好',
+            '别吃太辣，小心上火',
+            '感觉无聊就做点喜欢的事',
+            '今天也要对自己好一点',
+            '记得剪指甲，保持卫生',
+            '别总宅着，出去透透气',
+            '多吃点坚果，补充能量',
+            '不开心就哭出来，没关系的',
+            '记得带钥匙，别忘在家里了',
+            '别喝太多咖啡，晚上会睡不着',
+            '累了就请假休息，别硬撑',
+            '今天的云很好看，抬头看看吧',
+            '记得擦桌子，保持整洁',
+            '别太拼，身体是革命的本钱',
+            '多吃点鱼，对大脑好',
+            '感觉孤独的话，找朋友聊聊天',
+            '出门记得带充电宝，别没电了',
+            '别吃太多零食，正餐要吃好',
+            '累了就看看搞笑视频，放松下',
+            '今天也要记得微笑呀',
+            '记得换床单，保持干净',
+            '别给自己设定太高的目标，一步一步来',
+            '多吃点鸡蛋，补充营养',
+            '不开心的时候，出去走走吧',
+            '记得带口罩，保护自己',
+            '别熬夜打游戏啦，早点睡',
+            '多喝小米粥，养胃',
+            '累了就少说话，安静休息会儿',
+            '今天有没有夸自己？',
+            '记得倒垃圾，保持家里整洁',
+            '别太在意小事，放过自己',
+            '多吃点香蕉，补充快乐激素',
+            '感觉难过的话，我在这里听你说',
+            '出门记得检查门窗是否关好'
         ];
-        
-        // 弹窗背景色列表
+
+        // 更多柔和的背景色
         const bgColors = [
-            '#fff0f5', '#e6f7ff', '#f0fff4', '#fff8e6', 
-            '#f5f0ff', '#fff0e6', '#e6ffe6', '#ffe6f0'
+            '#fff0f5', '#ffeef2', '#fce4ec', '#f8d7da', '#fff3cd', 
+            '#e6f7ff', '#d1ecf1', '#cfe2ff', '#e8f4fd', '#d7f5e8',
+            '#f0fff4', '#e6fffa', '#d4edda', '#f5f0ff', '#ede7f6',
+            '#fff8e6', '#fff3e0', '#fff8e1', '#f8f9fa', '#f0f4f8'
         ];
-        
-        // 获取屏幕宽高（适配手机）
+
+        // 屏幕尺寸
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        
-        // 弹窗尺寸（固定大小，避免过大）
-        const tipWidth = 120;
-        const tipHeight = 60;
-        
-        // 每0.3秒生成一个弹窗
-        setInterval(() => {
-            createRandomTip();
-        }, 300); // 0.3秒 = 300毫秒
-        
-        // 创建随机位置的弹窗
-        function createRandomTip() {
+        const centerX = screenWidth / 2;  // 屏幕中心X坐标
+        const centerY = screenHeight / 2; // 屏幕中心Y坐标
+
+        // 弹窗尺寸
+        const tipWidth = 130;
+        const tipHeight = 50;
+
+        // 控制扩散进度（0-1）
+        let spreadProgress = 0;
+        // 已生成的弹窗数量
+        let tipCount = 0;
+        // 最大弹窗数量（根据屏幕大小自动计算）
+        const maxTips = Math.floor((screenWidth * screenHeight) / (tipWidth * tipHeight)) * 1.2;
+
+        // 心形曲线参数（控制扩散轨迹）
+        function heartCurve(t) {
+            // 心形参数方程，t范围0-2π
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            return { x, y };
+        }
+
+        // 生成随机角度（用于心形扩散的基础角度）
+        function getRandomAngle() {
+            return Math.random() * Math.PI * 2;
+        }
+
+        // 创建弹窗
+        function createTip() {
+            if (tipCount >= maxTips) return; // 达到最大数量停止
+
             // 1. 创建弹窗元素
             const tipBox = document.createElement('div');
             tipBox.className = 'tip-box';
-            
-            // 2. 随机内容
+
+            // 2. 随机提示语
             const randomTip = tips[Math.floor(Math.random() * tips.length)];
             tipBox.innerText = randomTip;
-            
+
             // 3. 随机背景色
             tipBox.style.backgroundColor = bgColors[Math.floor(Math.random() * bgColors.length)];
-            
-            // 4. 随机位置（确保弹窗完全在屏幕内）
-            const maxLeft = screenWidth - tipWidth;
-            const maxTop = screenHeight - tipHeight;
-            const randomLeft = Math.floor(Math.random() * maxLeft);
-            const randomTop = Math.floor(Math.random() * maxTop);
-            tipBox.style.left = `${randomLeft}px`;
-            tipBox.style.top = `${randomTop}px`;
-            
-            // 5. 点击弹窗可移除（避免屏幕完全被占满后无法操作）
+
+            // 4. 计算初始位置（中心）和目标位置（心形轨迹）
+            const angle = getRandomAngle();
+            const heart = heartCurve(angle);
+            // 基础扩散半径（随进度增加）
+            const baseRadius = Math.min(screenWidth, screenHeight) / 4 * spreadProgress;
+            // 随机偏移量（避免完全重合）
+            const randomOffset = (Math.random() - 0.5) * 40;
+            // 计算最终位置（基于心形曲线）
+            const targetX = centerX + (heart.x * 3 + randomOffset) * (baseRadius / 10);
+            const targetY = centerY - (heart.y * 3 + randomOffset) * (baseRadius / 10); // y轴反向
+
+            // 初始位置设为中心
+            tipBox.style.left = `${centerX - tipWidth/2}px`;
+            tipBox.style.top = `${centerY - tipHeight/2}px`;
+
+            // 5. 添加到页面后，触发向目标位置的动画
+            document.body.appendChild(tipBox);
+            setTimeout(() => {
+                tipBox.style.left = `${Math.max(0, Math.min(screenWidth - tipWidth, targetX))}px`;
+                tipBox.style.top = `${Math.max(0, Math.min(screenHeight - tipHeight, targetY))}px`;
+            }, 10);
+
+            // 6. 点击移除弹窗
             tipBox.onclick = function() {
                 this.remove();
+                tipCount--;
             };
-            
-            // 6. 添加到页面
-            document.body.appendChild(tipBox);
+
+            tipCount++;
+            spreadProgress = Math.min(1, spreadProgress + 0.005); // 缓慢增加扩散进度
+        }
+
+        // 每0.3秒生成一个弹窗
+        setInterval(createTip, 300);
+
+        // 初始生成一批弹窗，快速形成中心聚集效果
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createTip, i * 100);
         }
     </script>
 </body>
