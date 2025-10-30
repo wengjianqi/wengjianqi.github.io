@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>小丑北瓜</title>
+    <title>随机位置关心提示</title>
     <style>
         body {
             margin: 0;
@@ -22,18 +22,19 @@
             color: #2c3e50;
             z-index: 1;
             cursor: pointer;
-            transition: transform 0.5s ease-out;
             max-width: 140px;
             text-align: center;
+            transition: transform 0.2s ease;
         }
         .tip-box:hover {
             transform: scale(1.05);
+            z-index: 2; /*  hover时层级提高，避免被其他弹窗遮挡 */
         }
     </style>
 </head>
 <body>
     <script>
-        // 新增大量关心类提示语（共100条）
+        // 关心类提示语（100条）
         const tips = [
             '今天也要好好吃饭呀',
             '累了就歇会儿，别硬撑',
@@ -137,10 +138,18 @@
             '别太在意小事，放过自己',
             '多吃点香蕉，补充快乐激素',
             '感觉难过的话，我在这里听你说',
-            '出门记得检查门窗是否关好'
+            '出门记得检查门窗是否关好',
+            '久坐对腰不好，起来活动活动',
+            '今天的月亮很圆，抬头看看呀',
+            '别让坏情绪影响一整天',
+            '记得多喝水，每天8杯哦',
+            '压力大时深呼吸，会轻松很多',
+            '别挑食，什么都要吃一点',
+            '睡前听会儿轻音乐，助眠',
+            '今天也有在好好生活呀'
         ];
 
-        // 更多柔和的背景色
+        // 柔和的背景色列表
         const bgColors = [
             '#fff0f5', '#ffeef2', '#fce4ec', '#f8d7da', '#fff3cd', 
             '#e6f7ff', '#d1ecf1', '#cfe2ff', '#e8f4fd', '#d7f5e8',
@@ -151,86 +160,47 @@
         // 屏幕尺寸
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        const centerX = screenWidth / 2;  // 屏幕中心X坐标
-        const centerY = screenHeight / 2; // 屏幕中心Y坐标
 
         // 弹窗尺寸
         const tipWidth = 130;
         const tipHeight = 50;
 
-        // 控制扩散进度（0-1）
-        let spreadProgress = 0;
-        // 已生成的弹窗数量
-        let tipCount = 0;
-        // 最大弹窗数量（根据屏幕大小自动计算）
-        const maxTips = Math.floor((screenWidth * screenHeight) / (tipWidth * tipHeight)) * 1.2;
+        // 每0.3秒生成一个新弹窗（一直弹）
+        setInterval(createRandomTip, 300);
 
-        // 心形曲线参数（控制扩散轨迹）
-        function heartCurve(t) {
-            // 心形参数方程，t范围0-2π
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-            return { x, y };
+        // 初始先弹出10个弹窗，快速填充屏幕
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createRandomTip, i * 100);
         }
 
-        // 生成随机角度（用于心形扩散的基础角度）
-        function getRandomAngle() {
-            return Math.random() * Math.PI * 2;
-        }
-
-        // 创建弹窗
-        function createTip() {
-            if (tipCount >= maxTips) return; // 达到最大数量停止
-
+        // 创建随机位置的弹窗
+        function createRandomTip() {
             // 1. 创建弹窗元素
             const tipBox = document.createElement('div');
             tipBox.className = 'tip-box';
 
-            // 2. 随机提示语
+            // 2. 随机选择提示语
             const randomTip = tips[Math.floor(Math.random() * tips.length)];
             tipBox.innerText = randomTip;
 
             // 3. 随机背景色
             tipBox.style.backgroundColor = bgColors[Math.floor(Math.random() * bgColors.length)];
 
-            // 4. 计算初始位置（中心）和目标位置（心形轨迹）
-            const angle = getRandomAngle();
-            const heart = heartCurve(angle);
-            // 基础扩散半径（随进度增加）
-            const baseRadius = Math.min(screenWidth, screenHeight) / 4 * spreadProgress;
-            // 随机偏移量（避免完全重合）
-            const randomOffset = (Math.random() - 0.5) * 40;
-            // 计算最终位置（基于心形曲线）
-            const targetX = centerX + (heart.x * 3 + randomOffset) * (baseRadius / 10);
-            const targetY = centerY - (heart.y * 3 + randomOffset) * (baseRadius / 10); // y轴反向
+            // 4. 计算随机位置（确保弹窗完全在屏幕内）
+            const maxLeft = screenWidth - tipWidth;
+            const maxTop = screenHeight - tipHeight;
+            const randomLeft = Math.floor(Math.random() * maxLeft);
+            const randomTop = Math.floor(Math.random() * maxTop);
+            tipBox.style.left = `${randomLeft}px`;
+            tipBox.style.top = `${randomTop}px`;
 
-            // 初始位置设为中心
-            tipBox.style.left = `${centerX - tipWidth/2}px`;
-            tipBox.style.top = `${centerY - tipHeight/2}px`;
-
-            // 5. 添加到页面后，触发向目标位置的动画
-            document.body.appendChild(tipBox);
-            setTimeout(() => {
-                tipBox.style.left = `${Math.max(0, Math.min(screenWidth - tipWidth, targetX))}px`;
-                tipBox.style.top = `${Math.max(0, Math.min(screenHeight - tipHeight, targetY))}px`;
-            }, 10);
-
-            // 6. 点击移除弹窗
+            // 5. 点击弹窗可移除（避免完全占满屏幕）
             tipBox.onclick = function() {
                 this.remove();
-                tipCount--;
             };
 
-            tipCount++;
-            spreadProgress = Math.min(1, spreadProgress + 0.005); // 缓慢增加扩散进度
-        }
-
-        // 每0.3秒生成一个弹窗
-        setInterval(createTip, 300);
-
-        // 初始生成一批弹窗，快速形成中心聚集效果
-        for (let i = 0; i < 10; i++) {
-            setTimeout(createTip, i * 100);
+            // 6. 添加到页面
+            document.body.appendChild(tipBox);
         }
     </script>
 </body>
