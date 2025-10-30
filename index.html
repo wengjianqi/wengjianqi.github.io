@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>小丑北瓜</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden; /* 禁止滚动，避免弹窗超出屏幕 */
+            background-color: #f0f0f0;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        /* 提示弹窗样式 */
+        .tip-box {
+            position: absolute; /* 绝对定位，方便控制随机位置 */
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 16px;
+            color: #333;
+            z-index: 1; /* 确保弹窗层级正确 */
+            cursor: pointer; /* 点击可移除弹窗（可选功能） */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 温馨提示列表
+        const tips = [
+            '多喝水哦~', '保持微笑呀', '元气满满',
+            '吃水果啦', '好心情', '爱自己', '想你了',
+            '梦想成真', '期待见面', '金榜题名',
+            '顺顺利利', '早点休息', '烦恼消失',
+            '别熬夜', '开心吗', '多穿衣服'
+        ];
+        
+        // 弹窗背景色列表
+        const bgColors = [
+            '#fff0f5', '#e6f7ff', '#f0fff4', '#fff8e6', 
+            '#f5f0ff', '#fff0e6', '#e6ffe6', '#ffe6f0'
+        ];
+        
+        // 获取屏幕宽高（适配手机）
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // 弹窗尺寸（固定大小，避免过大）
+        const tipWidth = 120;
+        const tipHeight = 60;
+        
+        // 每0.3秒生成一个弹窗
+        setInterval(() => {
+            createRandomTip();
+        }, 300); // 0.3秒 = 300毫秒
+        
+        // 创建随机位置的弹窗
+        function createRandomTip() {
+            // 1. 创建弹窗元素
+            const tipBox = document.createElement('div');
+            tipBox.className = 'tip-box';
+            
+            // 2. 随机内容
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            tipBox.innerText = randomTip;
+            
+            // 3. 随机背景色
+            tipBox.style.backgroundColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+            
+            // 4. 随机位置（确保弹窗完全在屏幕内）
+            const maxLeft = screenWidth - tipWidth;
+            const maxTop = screenHeight - tipHeight;
+            const randomLeft = Math.floor(Math.random() * maxLeft);
+            const randomTop = Math.floor(Math.random() * maxTop);
+            tipBox.style.left = `${randomLeft}px`;
+            tipBox.style.top = `${randomTop}px`;
+            
+            // 5. 点击弹窗可移除（避免屏幕完全被占满后无法操作）
+            tipBox.onclick = function() {
+                this.remove();
+            };
+            
+            // 6. 添加到页面
+            document.body.appendChild(tipBox);
+        }
+    </script>
+</body>
+</html>
